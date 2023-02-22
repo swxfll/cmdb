@@ -1,0 +1,32 @@
+# 基于Centos构建(适用于国内服务器)
+FROM python:3.10.10-slim-buster
+
+WORKDIR /cmdb-flask
+
+RUN > /etc/apt/sources.list ; \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free" > /etc/apt/sources.list; \
+    apt update;  \
+    apt install git -y; \
+    git clone https://gitee.com/yun_guo/cmdb.git /cmdb-flask; \
+    cd api-server/; \
+    python -m pip install --upgrade pip -i https://pypi.doubanio.com/simple; \
+    pip3 install -r requirements.txt -i https://pypi.doubanio.com/simple; \
+    pip3 install gunicorn; \
+    apt remove git -y
+
+WORKDIR /cmdb-flask/api-server
+
+EXPOSE 5000
+CMD ["gunicorn", "-w", "5", "-b", "0.0.0.0:5000", "--log-level", "info","--access-logfile", "-", "app:app"]
+
+
+# https://www.freecodecamp.org/news
+# docker rm -f cmdb-flask && docker rmi cmdb-flask
+# docker build --tag cmdb-flask .
+# docker run -d --name cmdb-flask -p 5000:5000 cmdb-flask
+
+# docker system prune --volumes
+
+
+
+
