@@ -1,1 +1,1 @@
-# Gala CMDB
+# Quark CMDB
